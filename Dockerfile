@@ -1,20 +1,16 @@
-FROM node:18-alpine
+# تغییر نسخه از alpine به slim برای حل مشکل پکیج‌های باینری تلویند
+FROM node:22-slim
 
 WORKDIR /app
 
-# کپی کردن فایل کانفیگ پکیج‌ها
 COPY package.json ./
 
-# نصب پکیج‌ها بدون توجه به فایل قفل و محدودیت‌ها
 RUN npm install --no-audit --progress=false
 
-# کپی کردن بقیه فایل‌های پروژه
 COPY . .
 
-# بیلد کردن پروژه نهایی Next.js
 RUN npm run build
 
 EXPOSE 3000
 
-# دستور اجرای برنامه
 CMD ["npm", "start"]
