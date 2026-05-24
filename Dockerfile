@@ -1,20 +1,20 @@
-FROM python:3.10-slim
+FROM node:18-alpine
 
-# ایجاد پوشه برنامه در سرور
 WORKDIR /app
 
-# کپی کردن فایل لیست پکیج‌ها (اگر وجود دارد)
-COPY requirements.txt .
+# کپی کردن فایل کانفیگ پکیج‌ها
+COPY package.json ./
 
-# نصب پکیج‌های مورد نیاز (اگر فایلی نبود این خط نادیده گرفته می‌شود)
-RUN if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt; fi
+# نصب پکیج‌ها بدون توجه به فایل قفل و محدودیت‌ها
+RUN npm install --no-audit --progress=false
 
-# کپی کردن تمام فایل‌های پروژه به سرور
+# کپی کردن بقیه فایل‌های پروژه
 COPY . .
 
-# پورتی که برنامه روی آن گوش می‌دهد (کویب به صورت پیش‌فرض روی 8000 تنظیم است)
-EXPOSE 8000
+# بیلد کردن پروژه نهایی Next.js
+RUN npm run build
 
-# دستور اجرای برنامه شما
-# توجه: نام فایل اصلی خود را جایگزین main.py کنید (مثلاً app.py)
-CMD ["python", "main.py"]
+EXPOSE 3000
+
+# دستور اجرای برنامه
+CMD ["npm", "start"]
